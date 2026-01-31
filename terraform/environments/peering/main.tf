@@ -59,7 +59,7 @@ data "terraform_remote_state" "eu_west_2" {
 }
 
 module "vpc_peering" {
-  source = "../../modules/vpc-peering"
+  source = "./modules/vpc-peering"
 
   providers = {
     aws.us_east_1 = aws.us_east_1
