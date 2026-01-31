@@ -1,0 +1,21 @@
+# Terraform files
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+.terraform/
+.terraform.lock.hcl
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Log file
+*.log
+
+# Unwanted directories
+Thelix-Holdings-Assessment/
+jenkins-sonar-ci/
+jenkins_deploy_ec2/
