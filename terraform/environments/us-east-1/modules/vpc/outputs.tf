@@ -34,31 +34,9 @@ output "cde_subnet_ids" {
 }
 
 output "app_private_route_table_ids" {
-  value       = aws_route_table.app_private[*].id
+  value       = aws_route_table.app_private_route_table[*].id
   description = "Route table IDs for applications' private subnets"
 }
 
-output "database_route_table_ids" {
-  value       = aws_route_table.database[*].id
-  description = "Route table IDs for database subnets"
-}
 
-output "cde_route_table_ids" {
-  value       = aws_route_table.cde[*].id
-  description = "Route table IDs for CDE subnets"
-}
 
-output "app_private_subnet_ids" {
-  value       = module.vpc.app_private_subnet_ids
-  description = "List of Private Subnet IDs"
-}
-
-output "database_subnet_ids" {
-  value       = module.vpc.database_subnet_ids
-  description = "List of Database Subnet IDs"
-}
-
-output "cde_subnet_ids" {
-  value       = module.vpc.cde_subnet_ids
-  description = "List of CDE Subnet IDs"
-}

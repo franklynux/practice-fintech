@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     bucket  = "xterns-s3-statefile-us-east-1"
-    key     = "eu-west-1/terraform.tfstate"
+    key     = "us-east-1/terraform.tfstate"
     region  = "us-east-1"
     encrypt = true
 

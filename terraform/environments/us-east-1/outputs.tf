@@ -8,6 +8,11 @@ output "vpc_id" {
   description = "VPC ID"
 }
 
+output "vpc_cidr_block" {
+  value       = module.vpc.vpc_cidr_block
+  description = "Primary CIDR block of the VPC"
+}
+
 output "public_subnet_ids" {
   value       = module.vpc.public_subnet_ids
   description = "List of Public Subnet IDs"
@@ -26,4 +31,9 @@ output "database_subnet_ids" {
 output "cde_subnet_ids" {
   value       = module.vpc.cde_subnet_ids
   description = "List of CDE Subnet IDs"
+}
+
+output "app_private_route_table_ids" {
+  value       = module.vpc.app_private_route_table_ids
+  description = "Route table IDs for applications' private subnets"
 }

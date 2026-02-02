@@ -35,7 +35,8 @@ locals {
 
 
 # Peering connections (same as before)
-# US To Ireland
+# US To Ireland ( Requester)
+
 resource "aws_vpc_peering_connection" "us_east_1_to_eu_west_1" {
   for_each    = local.enable_map
   provider    = aws.us_east_1
@@ -45,10 +46,6 @@ resource "aws_vpc_peering_connection" "us_east_1_to_eu_west_1" {
   auto_accept = false
 
   tags = merge(local.base_tags, { Name = "us-east-1-to-eu-west-1" })
-
-  requester {
-    allow_remote_vpc_dns_resolution = true
-  }
 }
 
 # Ireland To US
@@ -59,10 +56,6 @@ resource "aws_vpc_peering_connection_accepter" "eu_west_1_accept_us_east_1" {
   auto_accept               = true
 
   tags = merge(local.base_tags, { Name = "eu-west-1-accept-us-east-1" })
-
-  accepter {
-    allow_remote_vpc_dns_resolution = true
-  }
 }
 
 
@@ -76,10 +69,6 @@ resource "aws_vpc_peering_connection" "us_east_1_to_eu_west_2" {
   auto_accept = false
 
   tags = merge(local.base_tags, { Name = "us-east-1-to-eu-west-2" })
-
-  requester {
-    allow_remote_vpc_dns_resolution = true
-  }
 }
 
 # London To US
@@ -90,10 +79,6 @@ resource "aws_vpc_peering_connection_accepter" "eu_west_2_accept_us_east_1" {
   auto_accept               = true
 
   tags = merge(local.base_tags, { Name = "eu-west-2-accept-us-east-1" })
-
-  accepter {
-    allow_remote_vpc_dns_resolution = true
-  }
 }
 
 # Ireland To London
@@ -106,10 +91,6 @@ resource "aws_vpc_peering_connection" "eu_west_1_to_eu_west_2" {
   auto_accept = false
 
   tags = merge(local.base_tags, { Name = "eu-west-1-to-eu-west-2" })
-
-  requester {
-    allow_remote_vpc_dns_resolution = true
-  }
 }
 
 # London To Ireland
@@ -120,10 +101,6 @@ resource "aws_vpc_peering_connection_accepter" "eu_west_2_accept_eu_west_1" {
   auto_accept               = true
 
   tags = merge(local.base_tags, { Name = "eu-west-2-accept-eu-west-1" })
-
-  accepter {
-    allow_remote_vpc_dns_resolution = true
-  }
 }
 
 # Routes configuration (Only the Applications' private Route Tables get routes)

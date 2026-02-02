@@ -13,7 +13,7 @@ variable "aws_profile" {
 variable "state_bucket" {
   description = "S3 bucket storing the regional Terraform states."
   type        = string
-  default     = "xterns-statefile-us-east-1"
+  default     = "xterns-s3-statefile-us-east-1"
 }
 
 variable "state_bucket_region" {

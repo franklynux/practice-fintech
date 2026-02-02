@@ -61,7 +61,25 @@ variable "tags" {
   default     = {}
 }
 
-/*
+/* 
+variable "us_east_1_private_subnet_ids" {
+  description = "Private subnet IDs for us-east-1 test instances"
+  type        = list(string)
+  default     = []
+}
+
+variable "eu_west_1_private_subnet_ids" {
+  description = "Private subnet IDs for eu-west-1 test instances"
+  type        = list(string)
+  default     = []
+}
+
+variable "eu_west_2_private_subnet_ids" {
+  description = "Private subnet IDs for eu-west-2 test instances"
+  type        = list(string)
+  default     = []
+} 
+
 variable "private_route_table_name_filters" {
   description = "Name tag filters used to select private route tables only."
   type        = list(string)

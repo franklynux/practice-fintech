@@ -59,7 +59,7 @@ data "terraform_remote_state" "eu_west_2" {
 }
 
 module "vpc_peering" {
-  source = "./modules/vpc-peering"
+  source = "../../../modules/vpc-peering"
 
   providers = {
     aws.us_east_1 = aws.us_east_1
@@ -84,5 +84,9 @@ module "vpc_peering" {
   us_east_1_private_route_table_ids = data.terraform_remote_state.us_east_1.outputs.app_private_route_table_ids
   eu_west_1_private_route_table_ids = data.terraform_remote_state.eu_west_1.outputs.app_private_route_table_ids
   eu_west_2_private_route_table_ids = data.terraform_remote_state.eu_west_2.outputs.app_private_route_table_ids
-
+  
+  # Private subnet IDs for test instances
+  us_east_1_private_subnet_ids = data.terraform_remote_state.us_east_1.outputs.app_private_subnet_ids
+  eu_west_1_private_subnet_ids = data.terraform_remote_state.eu_west_1.outputs.app_private_subnet_ids
+  eu_west_2_private_subnet_ids = data.terraform_remote_state.eu_west_2.outputs.app_private_subnet_ids
 }

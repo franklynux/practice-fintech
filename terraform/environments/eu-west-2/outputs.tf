@@ -1,29 +1,39 @@
 output "selected_availability_zones" {
-  value       = local.selected_azs
+  value       = module.vpc.selected_availability_zones
   description = "List of selected AZs"
 }
 
 output "vpc_id" {
-  value       = aws_vpc.eu-west-2-vpc.id
+  value       = module.vpc.vpc_id
   description = "VPC ID"
 }
 
+output "vpc_cidr_block" {
+  value       = module.vpc.vpc_cidr_block
+  description = "Primary CIDR block of the VPC"
+}
+
 output "public_subnet_ids" {
-  value       = aws_subnet.public_subnets[*].id
+  value       = module.vpc.public_subnet_ids
   description = "List of Public Subnet IDs"
 }
 
 output "app_private_subnet_ids" {
-  value       = aws_subnet.app_private_subnets[*].id
+  value       = module.vpc.app_private_subnet_ids
   description = "List of Private Subnet IDs"
 }
 
 output "database_subnet_ids" {
-  value       = aws_subnet.database_subnets[*].id
+  value       = module.vpc.database_subnet_ids
   description = "List of Database Subnet IDs"
 }
 
 output "cde_subnet_ids" {
-  value       = aws_subnet.cde_subnets[*].id
+  value       = module.vpc.cde_subnet_ids
   description = "List of CDE Subnet IDs"
+}
+
+output "app_private_route_table_ids" {
+  value       = module.vpc.app_private_route_table_ids
+  description = "Route table IDs for applications' private subnets"
 }

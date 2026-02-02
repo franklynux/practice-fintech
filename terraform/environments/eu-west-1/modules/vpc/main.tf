@@ -73,104 +73,47 @@ resource "aws_subnet" "app_private_subnets" {
   }
 }
 
-# Create a NAT Gateway in the first public subnet
-resource "aws_nat_gateway" "private_subnet_natGW_1" {
-  allocation_id = aws_eip.nat_eip_1.id
-  subnet_id     = aws_subnet.public_subnets[0].id # Use public subnet
-  tags = {
-    Name = "${var.vpc_name}-private_natGW_1"
-  }
-}
-
-# Create an Elastic IP for the NAT Gateway 1
-resource "aws_eip" "nat_eip_1" {
+# Create Elastic IPs for NAT Gateways
+resource "aws_eip" "nat_eip" {
+  count  = 3
   domain = "vpc" # Specify that the Elastic IP is for a VPC
   tags = {
-    Name = "${var.vpc_name}-nat_eip_1"
+    Name = "${var.vpc_name}-nat_eip_${count.index + 1}"
   }
 }
 
-
-# Create a NAT Gateway in the second public subnet
-resource "aws_nat_gateway" "private_subnet_natGW_2" {
-  allocation_id = aws_eip.nat_eip_2.id
-  subnet_id     = aws_subnet.public_subnets[1].id # Use public subnet
+# Create NAT Gateways in public subnets
+resource "aws_nat_gateway" "private_subnet_natGW" {
+  count         = 3
+  allocation_id = aws_eip.nat_eip[count.index].id
+  subnet_id     = aws_subnet.public_subnets[count.index].id 
   tags = {
-    Name = "${var.vpc_name}-private_natGW_2"
-  }
-}
-
-# Create an Elastic IP for the NAT Gateway 2
-resource "aws_eip" "nat_eip_2" {
-  domain = "vpc" # Specify that the Elastic IP is for a VPC
-  tags = {
-    Name = "${var.vpc_name}-nat_eip_2"
-  }
-}
-
-# Create a NAT Gateway in the third public subnet
-resource "aws_nat_gateway" "private_subnet_natGW_3" {
-  allocation_id = aws_eip.nat_eip_3.id
-  subnet_id     = aws_subnet.public_subnets[2].id
-  tags = {
-    Name = "${var.vpc_name}-private_natGW_3"
-  }
-}
-
-# Create an Elastic IP for the NAT Gateway 3
-resource "aws_eip" "nat_eip_3" {
-  domain = "vpc"
-  tags = {
-    Name = "${var.vpc_name}-nat_eip_3"
+    Name = "${var.vpc_name}-private_natGW_${count.index + 1}"
   }
 }
 
 # Create Route Tables for Private Subnets
-resource "aws_route_table" "private_rt_1" {
+resource "aws_route_table" "app_private_route_table" {
+  count  = 3
   vpc_id = aws_vpc.eu-west-1-vpc.id
   tags = {
-    Name = "${var.vpc_name}-private_rt_1"
-  }
-}
-
-resource "aws_route_table" "private_rt_2" {
-  vpc_id = aws_vpc.eu-west-1-vpc.id
-  tags = {
-    Name = "${var.vpc_name}-private_rt_2"
-  }
-}
-
-resource "aws_route_table" "private_rt_3" {
-  vpc_id = aws_vpc.eu-west-1-vpc.id
-  tags = {
-    Name = "${var.vpc_name}-private_rt_3"
+    Name = "${var.vpc_name}-private_rt_${count.index + 1}"
   }
 }
 
 # Create Routes for Private Route Tables to use NAT Gateways
-resource "aws_route" "nat_route_1" {
-  route_table_id         = aws_route_table.private_rt_1.id
+resource "aws_route" "nat_route" {
+  count                  = 3
+  route_table_id         = aws_route_table.app_private_route_table[count.index].id
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.private_subnet_natGW_1.id
-}
-
-resource "aws_route" "nat_route_2" {
-  route_table_id         = aws_route_table.private_rt_2.id
-  destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.private_subnet_natGW_2.id
-}
-
-resource "aws_route" "nat_route_3" {
-  route_table_id         = aws_route_table.private_rt_3.id
-  destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.private_subnet_natGW_3.id
+  nat_gateway_id         = aws_nat_gateway.private_subnet_natGW[count.index].id
 }
 
 # Associate Private Subnets with their respective Route Tables
 resource "aws_route_table_association" "private_rt_assoc" {
   count          = var.app_private_subnet_count
   subnet_id      = aws_subnet.app_private_subnets[count.index].id
-  route_table_id = count.index % 3 == 0 ? aws_route_table.private_rt_1.id : (count.index % 3 == 1 ? aws_route_table.private_rt_2.id : aws_route_table.private_rt_3.id)
+  route_table_id = aws_route_table.app_private_route_table[count.index].id
 }
 
 
