@@ -84,9 +84,22 @@ module "vpc_peering" {
   us_east_1_private_route_table_ids = data.terraform_remote_state.us_east_1.outputs.app_private_route_table_ids
   eu_west_1_private_route_table_ids = data.terraform_remote_state.eu_west_1.outputs.app_private_route_table_ids
   eu_west_2_private_route_table_ids = data.terraform_remote_state.eu_west_2.outputs.app_private_route_table_ids
-  
-  # Private subnet IDs for test instances
-  us_east_1_private_subnet_ids = data.terraform_remote_state.us_east_1.outputs.app_private_subnet_ids
-  eu_west_1_private_subnet_ids = data.terraform_remote_state.eu_west_1.outputs.app_private_subnet_ids
-  eu_west_2_private_subnet_ids = data.terraform_remote_state.eu_west_2.outputs.app_private_subnet_ids
+}
+
+module "cross_region_lb_prep" {
+  source = "../../../modules/cross-region-lb-prep"
+
+  providers = {
+    aws = aws.us_east_1
+  }
+
+  name                   = var.cross_region_lb_name
+  enable_cross_region_lb = var.enable_cross_region_lb
+  listener_port          = var.cross_region_lb_listener_port
+  listener_protocol      = var.cross_region_lb_listener_protocol
+  regional_endpoint_arns = var.cross_region_lb_endpoint_arns
+  health_check_port      = var.cross_region_lb_health_check_port
+  health_check_protocol  = var.cross_region_lb_health_check_protocol
+  health_check_path      = var.cross_region_lb_health_check_path
+  tags                   = var.tags
 }

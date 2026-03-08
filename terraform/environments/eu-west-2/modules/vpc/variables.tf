@@ -70,7 +70,7 @@ variable "cde_subnet_cidrs" {
   default     = ["10.2.30.0/24", "10.2.31.0/24", "10.2.32.0/24"]
 }
 
-#cloudwatch log retention duration variable
+# Cloudwatch log retention duration variable
 variable "retention_in_days" {
   description = "Number of days to retain logs in CloudWatch"
   type        = number

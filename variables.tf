@@ -10,3 +10,8 @@ variable "bucket_name" {
   default     = "xterns-s3-statefile"
 }
 
+variable "aws_profile" {
+  description = "AWS profile name"
+  type        = string
+  default     = "franklynux"
+}

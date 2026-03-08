@@ -1,0 +1,108 @@
+name: Terraform CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: terraform-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TF_IN_AUTOMATION: "true"
+  TF_INPUT: "false"
+  TF_LOG: "ERROR"
+
+jobs:
+  lint:
+    name: Lint and Validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Apply PCI-aware log masking
+        shell: bash
+        run: |
+          set +x
+          while IFS='=' read -r key value; do
+            [[ -z "$value" ]] && continue
+            if [[ "$key" =~ (TOKEN|SECRET|PASSWORD|PASS|KEY|PRIVATE|CARD|PAN|CVV|CVC|ACCOUNT|AUTH) ]]; then
+              echo "::add-mask::$value"
+            elif [[ "$value" =~ ^[0-9]{13,19}$ ]]; then
+              echo "::add-mask::$value"
+            fi
+          done < <(env)
+          if [[ -n "${GITHUB_TOKEN:-}" ]]; then
+            echo "::add-mask::${GITHUB_TOKEN}"
+          fi
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+
+      - name: Terraform formatting check
+        run: terraform fmt -check -recursive -no-color
+
+      - name: Terraform validate (all directories)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t tf_dirs < <(find . -type f -name "*.tf" -not -path "*/.terraform/*" -exec dirname {} \; | sort -u)
+          for dir in "${tf_dirs[@]}"; do
+            echo "Validating ${dir}"
+            terraform -chdir="${dir}" init -backend=false -no-color
+            terraform -chdir="${dir}" validate -no-color
+          done
+
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Apply PCI-aware log masking
+        shell: bash
+        run: |
+          set +x
+          while IFS='=' read -r key value; do
+            [[ -z "$value" ]] && continue
+            if [[ "$key" =~ (TOKEN|SECRET|PASSWORD|PASS|KEY|PRIVATE|CARD|PAN|CVV|CVC|ACCOUNT|AUTH) ]]; then
+              echo "::add-mask::$value"
+            elif [[ "$value" =~ ^[0-9]{13,19}$ ]]; then
+              echo "::add-mask::$value"
+            fi
+          done < <(env)
+          if [[ -n "${GITHUB_TOKEN:-}" ]]; then
+            echo "::add-mask::${GITHUB_TOKEN}"
+          fi
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+
+      - name: Run Terraform unit tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t test_dirs < <(find . -type f -name "*.tftest.hcl" -not -path "*/.terraform/*" -exec dirname {} \; | sort -u)
+          if [[ "${#test_dirs[@]}" -eq 0 ]]; then
+            echo "No Terraform unit tests (*.tftest.hcl) found."
+            exit 0
+          fi
+          for dir in "${test_dirs[@]}"; do
+            echo "Running terraform test in ${dir}"
+            terraform -chdir="${dir}" init -backend=false -no-color
+            terraform -chdir="${dir}" test -no-color
+          done

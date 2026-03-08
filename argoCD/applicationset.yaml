@@ -1,0 +1,35 @@
+# Product, Cart and Order Microservices
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: fintech-services
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - name: merchant-api
+            service: merchant-api-service
+          - name: reconciliation-api
+            service: reconciliation-service
+          - name: payment-gateway-api
+            service: payment-gateway-proxy-service
+  template:
+    metadata:
+      name: '{{name}}'
+      namespace: argocd
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/franklynux/ecommerce-platform-microservice-architecture.git
+        targetRevision: HEAD
+        path: k8s/{{service}}
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: fintech
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true

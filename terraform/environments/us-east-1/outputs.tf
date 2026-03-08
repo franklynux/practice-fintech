@@ -37,3 +37,53 @@ output "app_private_route_table_ids" {
   value       = module.vpc.app_private_route_table_ids
   description = "Route table IDs for applications' private subnets"
 }
+
+output "eks_cluster_name" {
+  value       = module.eks.cluster_name
+  description = "EKS cluster name"
+}
+
+output "eks_cluster_endpoint" {
+  value       = module.eks.cluster_endpoint
+  description = "EKS API server endpoint"
+}
+
+output "eks_node_group_name" {
+  value       = module.eks.node_group_name
+  description = "Primary EKS node group name"
+}
+
+output "eks_cluster_oidc_issuer" {
+  value       = module.eks.cluster_oidc_issuer
+  description = "OIDC issuer URL for IRSA"
+}
+
+# output "postgres_primary_db_endpoint" {
+#   value       = module.postgres_managed.primary_endpoint
+#   description = "Primary PostgreSQL endpoint."
+# }
+
+# output "postgres_primary_db_instance_arn" {
+#   value       = module.postgres_managed.primary_instance_arn
+#   description = "Primary PostgreSQL instance ARN for cross-region replicas."
+# }
+
+# output "postgres_read_replica_db_endpoint" {
+#   value       = module.postgres_managed.read_replica_endpoint
+#   description = "Read replica endpoint."
+# }
+
+# output "postgres_replica_db_lag_alarm_name" {
+#   value       = module.postgres_managed.replica_lag_alarm_name
+#   description = "CloudWatch alarm tracking 1-second replica lag objective."
+# }
+
+# output "postgres_primary_db_kms_key_arn" {
+#   value       = module.postgres_managed.kms_key_arn
+#   description = "KMS key ARN used for PostgreSQL encryption."
+# }
+
+# output "pgbouncer_endpoint" {
+#   value       = module.postgres_managed.pgbouncer_endpoint
+#   description = "Internal pgBouncer endpoint."
+# }

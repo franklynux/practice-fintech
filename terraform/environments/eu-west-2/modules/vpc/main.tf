@@ -86,7 +86,7 @@ resource "aws_eip" "nat_eip" {
 resource "aws_nat_gateway" "private_subnet_natGW" {
   count         = 3
   allocation_id = aws_eip.nat_eip[count.index].id
-  subnet_id     = aws_subnet.public_subnets[count.index].id 
+  subnet_id     = aws_subnet.public_subnets[count.index].id
   tags = {
     Name = "${var.vpc_name}-private_natGW_${count.index + 1}"
   }
@@ -178,6 +178,7 @@ resource "aws_route_table_association" "cde_rt_assoc" {
 resource "aws_cloudwatch_log_group" "us_east_1_vpc_flow_logs" {
   name              = "/aws/vpc/${var.vpc_name}-flow-logs"
   retention_in_days = var.retention_in_days
+  skip_destroy      = false
 }
 
 # IAM Role for VPC Flow Logs

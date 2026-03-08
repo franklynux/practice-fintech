@@ -23,37 +23,37 @@ variable "eu_west_2_vpc_id" {
 variable "us_east_1_vpc_cidr" {
   description = "VPC CIDR Block for us-east-1"
   type        = string
-  
+
 }
 
 variable "eu_west_1_vpc_cidr" {
   description = "VPC CIDR Block for eu-west-1"
   type        = string
-  
+
 }
 
 variable "eu_west_2_vpc_cidr" {
   description = "VPC CIDR Block for eu-west-2"
   type        = string
-  
+
 }
 
 variable "eu_west_2_private_route_table_ids" {
   description = "A list of private route table IDs where the peering connection route will be created"
   type        = list(string)
-  
+
 }
 
 variable "eu_west_1_private_route_table_ids" {
   description = "A list of private route table IDs where the peering connection route will be created"
   type        = list(string)
-  
+
 }
 
 variable "us_east_1_private_route_table_ids" {
   description = "A list of private route table IDs where the peering connection route will be created"
   type        = list(string)
-  
+
 }
 variable "tags" {
   description = "Tags applied to peering connections"
@@ -61,7 +61,7 @@ variable "tags" {
   default     = {}
 }
 
-/* 
+/*
 variable "us_east_1_private_subnet_ids" {
   description = "Private subnet IDs for us-east-1 test instances"
   type        = list(string)

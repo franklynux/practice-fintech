@@ -86,7 +86,7 @@ resource "aws_eip" "nat_eip" {
 resource "aws_nat_gateway" "private_subnet_natGW" {
   count         = 3
   allocation_id = aws_eip.nat_eip[count.index].id
-  subnet_id     = aws_subnet.public_subnets[count.index].id 
+  subnet_id     = aws_subnet.public_subnets[count.index].id
   tags = {
     Name = "${var.vpc_name}-private_natGW_${count.index + 1}"
   }

@@ -16,3 +16,9 @@ variable "kms_deletion_window_in_days" {
   default     = 30
 }
 
+variable "aws_profile" {
+  description = "AWS profile name"
+  type        = string
+  default     = "franklynux"
+
+}

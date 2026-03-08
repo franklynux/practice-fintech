@@ -5,6 +5,14 @@
 *.tfvars.json
 .terraform/
 .terraform.lock.hcl
+*/*/.terraform/
+*/.tfstate
+*/.tfstate.*
+*/*/*/.DS_Store
+*/.DS_Store
+
+
+
 
 # IDE files
 .vscode/
